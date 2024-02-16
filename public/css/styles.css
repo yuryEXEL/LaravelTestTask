@@ -1,0 +1,16 @@
+.my-spinner {
+    font-family: "Font Awesome  5 Free";
+    font-weight:  900;
+    content: url('../img/spinner.svg');
+    width:  10px;
+    height:  10px;
+    animation: my-spin 2s infinite linear;
+}
+@keyframes my-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
