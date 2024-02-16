@@ -12,16 +12,16 @@
     <div id="createUserForm" style="display: none;">
         <form id="userCreateForm">
             @csrf
-            @include('layouts.partials.input_fields')
-            <input type="submit" class="btn btn-primary" id="createUser" value="Create user" />
+            @include('layouts.user.partials.input_fields')
+            <input type="submit" class="btn btn-primary" id="createUser" value="Create user"/>
         </form>
     </div>
     <div id="updateUserForm" style="display: none;">
         <form id="userUpdateForm">
             @method('PUT')
             @csrf
-            @include('layouts.partials.input_fields')
-            <input type="submit" class="btn btn-primary" id="updateUser" value="Update user" />
+            @include('layouts.user.partials.input_fields')
+            <input type="submit" class="btn btn-primary" id="updateUser" value="Update user"/>
         </form>
     </div>
     <div id="deleteUserForm" style="display: none;">
@@ -29,7 +29,7 @@
             @method('DELETE')
             @csrf
             <input type="text" name="username" placeholder="Username"><br>
-            <input type="submit" class="btn btn-primary" id="deleteUser" value="Delete user" />
+            <input type="submit" class="btn btn-primary" id="deleteUser" value="Delete user"/>
         </form>
     </div>
     <div id="successMessages" style="color: green;"></div>

@@ -4,77 +4,33 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
 
-class Client
+class Client implements ClientInterface
 {
-    protected $baseUrl;
-
-    public function __construct()
+    /**
+     * Get user by user name
+     *
+     * @param string $userName
+     * @return bool
+     */
+    public function getUser(string $userName): bool
     {
-        $this->baseUrl = 'https://petstore.swagger.io/v2';
-    }
+        $response = Http::get(self::HOST . '/user/{$userName}');
 
-    public function getUser(string $userName)
-    {
-        $response = Http::get("{$this->baseUrl}/user/{$userName}");
-
-        if ($response->successful()) {
-            return $response->json();
-        }
-
-        return false;
+        return $response->successful();
     }
 
     /**
      * @param array $data
      * @return bool|
      */
-    public function createUser(array $data)
+    public function createUser(array $data): bool
     {
-        $response = Http::post("{$this->baseUrl}/user", $data);
+        $response = Http::post(self::HOST . '{$this->baseUrl}/user', $data);
 
-        if ($response->successful()) {
-            return $response->json();
-        }
-
-        return false;
-    }
-
-    /**
-     * Create users with list user on a third-party service
-     *
-     * @param array $data
-     * @return bool|Response
-     */
-    public function createWithArray(array $data)
-    {
-        $response = Http::post("{$this->baseUrl}/user/createWithArray", $data);
-
-        if ($response->successful()) {
-            return $response->json();
-        }
-
-        return false;
-    }
-
-    /**
-     * Create users with list user on a third-party service
-     *
-     * @param array $data
-     * @return bool|Response
-     */
-    public function createUsersWithList(array $data): bool|Response
-    {
-        $response = Http::post("{$this->baseUrl}/user/createUsersWithList", $data);
-
-        if ($response->successful()) {
-            return $response;
-        }
-
-        return false;
+        return $response->successful();
     }
 
     /**
@@ -82,19 +38,14 @@ class Client
      *
      * @param string $userName
      * @param array $data
-     * @return bool|Response
+     * @return bool
      */
-    public function updateUser(string $userName, array $data): bool|Response
+    public function updateUser(string $userName, array $data): bool
     {
-        $response = Http::put("{$this->baseUrl}/user/{$userName}", $data);
+        $response = Http::put(self::HOST . '/user/{$userName}', $data);
 
-        if ($response) {
-            return true;
-        }
-
-        return false;
+        return $response->successful();
     }
-
 
     /**
      * Delete user on a third-party service
@@ -104,11 +55,8 @@ class Client
      */
     public function deleteUser(string $userName): bool
     {
-        $response = Http::delete("{$this->baseUrl}/user/{$userName}");
-        if ($response->successful()) {
-           return true;
-        }
+        $response = Http::delete(self::HOST . '/user/{$userName}');
 
-        return false;
+        return $response->successful();
     }
 }

@@ -44,6 +44,7 @@ function clickButtonOnSaveUser() {
                 clickOnRowUserInTable();
             },
             error: function (xhr, status, error) {
+                removeSpinnerToButton('.btn-save-user-submit');
                 $('#editUserModal').modal('hide');
                 var errorMessage = xhr.responseText;
                 $('#errorMessage').html("Error: " + errorMessage);
@@ -79,6 +80,7 @@ function clickOnButtonUploadForm() {
                 }
             },
             error: function (xhr, status, error) {
+                removeSpinnerToButton('.btn-upload-submit');
                 var errorMessage = xhr.responseText;
                 $('#errorMessage').html('Error: ' + errorMessage);
             }
@@ -90,14 +92,14 @@ function clickOnButtonUploadForm() {
  * Add spinner to button
  */
 function addSpinnerToButton(selector) {
-    $(selector).prepend('<i class="fa fa-spinner fa-spin"></i>').attr('disabled', 'disabled');
+    $(selector).prepend('<i class="my-spinner my-spin"></i>').attr('disabled', 'disabled');
 }
 
 /**
  * Clear spinner
  */
 function removeSpinnerToButton(selector) {
-    $(selector).removeAttr('disabled').find('.fa-spinner').remove();
+    $(selector).removeAttr('disabled').find('.my-spinner').remove();
 }
 
 /**
