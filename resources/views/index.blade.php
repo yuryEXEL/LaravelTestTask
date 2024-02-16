@@ -3,7 +3,7 @@
 @section('content')
 
     <div class="container" id="user_list">
-        @include('layouts.partials.export_import')
+        @include('layouts.user.partials.export_import')
         <table class="table table-striped">
             <thead>
             <tr>
@@ -12,7 +12,7 @@
             </tr>
             </thead>
             <tbody id="userBody">
-            @foreach ($users as $user)
+            @foreach ($paginate->items() as $user)
                 <tr class="user-row" data-id="{{ $user->id }}">
                     <td>{{ $user->id }}</td>
                     <td id="username_{{ $user->id }}" data-value={{ $user->username }} >{{ $user->username }}</td>
@@ -21,7 +21,19 @@
             </tbody>
         </table>
     </div>
-    <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    @if($paginate->hasPages())
+        @if($paginate->hasMorePages())
+            <div>
+                <a href="{{$paginate->nextPageUrl()}}">Next page</a>
+            </div>
+        @else
+            <div>
+                <a href="{{$paginate->previousPageUrl()}}">Previous page</a>
+            </div>
+        @endif
+    @endif
+    <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">

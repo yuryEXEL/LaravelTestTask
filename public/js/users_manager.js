@@ -29,6 +29,7 @@ function clickButtonOnCreateUser() {
     $('#userCreateForm').on('submit', function (e) {
         e.preventDefault();
         clearErrorMessages();
+        addDisableButton('#createUser');
 
         var formData = new FormData(this);
 
@@ -39,10 +40,12 @@ function clickButtonOnCreateUser() {
             processData: false,
             contentType: false,
             success: function (response) {
+                removeDisableButton('#createUser');
                 this.addSuccessMessages(response);
                 this.clearForm('#userCreateForm :input[type="text"]');
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                removeDisableButton('.createUser');
                 addErrorMessages(jqXHR);
             }
         });
@@ -56,6 +59,7 @@ function clickButtonOnUpdateUser() {
     $('#userUpdateForm').on('submit', function (e) {
         e.preventDefault();
         clearErrorMessages();
+        addDisableButton('#updateUser');
 
         var formData = new FormData(this);
 
@@ -66,10 +70,12 @@ function clickButtonOnUpdateUser() {
             processData: false,
             contentType: false,
             success: function (response) {
+                removeDisableButton('#updateUser');
                 this.addSuccessMessages(response);
                 this.clearForm('#userUpdateForm :input[type="text"]')
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                removeDisableButton('#updateUser');
                 addErrorMessages(jqXHR);
             }
         });
@@ -83,6 +89,7 @@ function clickButtonOnDeleteUser() {
     $('#userDeleteForm').on('submit', function (e) {
         e.preventDefault();
         clearErrorMessages();
+        addDisableButton('#deleteUser');
 
         var formData = new FormData(this);
 
@@ -93,10 +100,12 @@ function clickButtonOnDeleteUser() {
             processData: false,
             contentType: false,
             success: function (response) {
+                removeDisableButton('#deleteUser');
                 this.addSuccessMessages(response);
                 this.clearForm('#userDeleteForm :input[type="text"]')
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                removeDisableButton('#deleteUser');
                 addErrorMessages(jqXHR);
             }
         });
@@ -140,4 +149,18 @@ function addErrorMessages(jqXHR) {
             });
         }
     });
+}
+
+/**
+ * Add disable button
+ */
+function addDisableButton(selector) {
+    $(selector).attr('disabled', 'disabled');
+}
+
+/**
+ * Remove disable button
+ */
+function removeDisableButton(selector) {
+    $(selector).removeAttr('disabled');
 }
