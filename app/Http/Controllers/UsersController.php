@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Exports\UsersExport;
+use App\Http\Requests\ImportUsersFileRequest;
+use App\Http\Requests\UserPutRequest;
 use App\Imports\UsersImport;
 use App\Models\User;
 use Illuminate\Contracts\Foundation\Application;
@@ -26,26 +28,30 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('id', 'desc')->get();
-
-        return view('index', compact('users'));
+        return view('index', [
+            'paginate' => User::orderBy('id', 'desc')->paginate(50)
+        ]);
     }
 
     /**
      * Update user
      *
-     * @param Request $request
+     * @param UserPutRequest $request
      * @return JsonResponse
+     * @throws \Throwable
      */
-    public function update(Request $request): JsonResponse
+    public function update(UserPutRequest $request): JsonResponse
     {
         try {
+            /** @var User $user */
             $user = User::findOrFail($request->userId);
         } catch (\Throwable) {
             return response()->json('User not found', 404);
         }
 
-        $user->update($request->all());
+        $validated = $request->validated();
+
+        $user->updateOrFail($validated);
 
         return response()->json('successful',200);
     }
@@ -63,28 +69,28 @@ class UsersController extends Controller
     /**
      * Import users from file
      *
-     * @param Request $request
+     * @param ImportUsersFileRequest $request
      * @return Application|ResponseFactory|\Illuminate\Foundation\Application|Response
      */
-    public function import(Request $request)
+    public function import(ImportUsersFileRequest $request)
     {
         try {
-            $request->validate(['file' => ['required', 'file', 'mimetypes:text/plain,text/csv']]);
+            $validated = $request->validated();
         } catch (\Throwable $e) {
             $message = $e->getMessage();
             return response()->json($message, 400);
         }
 
         $import = new UsersImport();
-        Excel::import($import, $request->file('file'));
+        Excel::import($import, $validated['file']);
         $userStatus = [];
         foreach ($import->data as $userData) {
             list($key, $value) = explode(":", $userData);
             $userStatus[$key] = $value;
         }
-        $users = User::orderBy('id', 'desc')->get();
+        $users = User::orderBy('id', 'desc')->paginate(50);
 
-        $html = view('layouts.partials.users_table', compact('users','userStatus'))->render();
+        $html = view('layouts.user.partials.users_table', compact('users','userStatus'))->render();
 
         return response($html, 200);
     }

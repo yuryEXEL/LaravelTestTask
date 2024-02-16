@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserManagerCreateUpdateRequest;
 use App\Services\UserService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -25,18 +26,18 @@ class UsersManagerController extends Controller
      */
     public function index()
     {
-        return view('userManager');
+        return view('users_manager');
     }
 
     /**
      * Update user
      *
-     * @param Request $request
+     * @param UserManagerCreateUpdateRequest $request
      * @return JsonResponse
      */
-    public function updateUser(Request $request): JsonResponse
+    public function updateUser(UserManagerCreateUpdateRequest $request): JsonResponse
     {
-        $request->validate($this->getValidateRule());
+        $request->validated();
         $result = $this->userService->update($request->all());
 
         return response()->json($result ? 'successful' : 'error',$result ? 200 : 404);
@@ -59,36 +60,17 @@ class UsersManagerController extends Controller
     /**
      * Create user
      *
-     * @param Request $request
+     * @param UserManagerCreateUpdateRequest $request
      * @return JsonResponse
      */
-    public function createUser(Request $request): JsonResponse
+    public function createUser(UserManagerCreateUpdateRequest $request): JsonResponse
     {
-        $request->validate($this->getValidateRule());
+        $request->validated();
         $result = $this->userService->create($request->all());
         if (!$result) {
             return response()->json('User is exist', 409);
         }
 
         return response()->json('successful', 200);
-    }
-
-    /**
-     * Get rule for validate form
-     *
-     * @return string[]
-     */
-    public function getValidateRule(): array
-    {
-        $rule = [
-            'username' => 'required|string',
-            'firstName' => 'required|string',
-            'lastName' => 'required|string',
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-            'phone' => 'required|string',
-        ];
-
-        return $rule;
     }
 }
