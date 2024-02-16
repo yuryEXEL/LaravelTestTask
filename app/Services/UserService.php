@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class UserService
 {
     public function __construct(
-        private readonly Client $client
+        private readonly ClientInterface $client
     ) {
     }
 
@@ -18,9 +18,9 @@ class UserService
      * Create user
      *
      * @param array $data
-     * @return false|User
+     * @return bool
      */
-    public function create(array $data): bool|User
+    public function create(array $data): bool
     {
         $response = $this->client->createUser($data);
         if ($response) {
@@ -30,7 +30,7 @@ class UserService
                 'username' => $data['username']
             ]);
 
-            return $user;
+            return true;
         }
 
         return false;
@@ -86,7 +86,7 @@ class UserService
     {
         try {
             $user = User::where('username', $username)->firstOrFail();
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException) {
             return false;
         }
 
